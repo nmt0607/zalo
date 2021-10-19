@@ -65,36 +65,73 @@ class AuthController extends Controller
     }
 
     public function logout(){
-        auth()->user()->tokens()->delete();
+        auth()->user()->currentAccessToken()->delete();
 
         return [
-            'message' => 'Logged out'
+            'code' => 1000,
+            'message' => 'OK',
+            'data' => [
+                "Đăng xuất thành công"
+            ]
         ];
+
     }
 
     public function login(Request $request) {
-        $request->validate([
-            'email' => 'required|string',
-            'password' => 'required|string'
-        ]);
+        if (Validator::make($request->all(), [
+            'phonenumber' => 'required|regex:/^0[0-9]{9}$/'
+        ])->fails()) {
+            return [
+                'code' => 9997,
+                'message' => 'Method Is Invalid',
+                'data' => ['Số điện thoại không hợp lệ']
+            ];
+        }
 
-        // Check email
-        $user = User::where('email', $request->email)->first();
+        // Check phonenumber
+        $user = User::where('phonenumber', $request->phonenumber)->first();
+
+        if (!$user) {
+            return [
+                'code' => 9995,
+                'message' => 'User Is Not Validated',
+                'data' => [
+                    'Số điện thoại chưa được đăng ký'
+                ]
+            ];
+        }
 
         // Check password
-        if(!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => 'Wong'
-            ], 401);
+        if (Validator::make($request->all(), [
+            'password' => 'required|alpha_num|between:6,10'
+        ])->fails()) {
+            return [
+                'code' => 9997,
+                'message' => 'Method Is Invalid',
+                'data' => ['Mật khẩu không hợp lệ']
+            ];
+        }
+
+        if(!Hash::check($request->password, $user->password)) {
+            return [
+                'code' => 9999,
+                'message' => 'Exception Error',
+                'data' => ['Mật khẩu không đúng']
+            ];
         }
 
         $token = $user->createToken('myapptoken')->plainTextToken;
 
-        $response = [
-            'user' => $user,
-            'token' => $token
+        return [
+            'code' => 1000,
+            'message' => 'OK',
+            'data' => [
+                'id' => $user->id,
+                'username' => $user->name,
+                'token' => $token,
+                'avatar' => '',
+                'active' => $user->state
+            ]
         ];
-
-        return response($response, 201);
     }
 }
