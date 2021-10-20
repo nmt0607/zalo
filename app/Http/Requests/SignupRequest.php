@@ -17,9 +17,7 @@ class SignupRequest extends CustomFormRequest
     {
         $failedRules = $validator->failed();
 
-        $failedPhonenumberRules = $failedRules['phonenumber'];
-
-        if (isset($failedPhonenumberRules['Unique'])) {
+        if (isset($failedRules['phonenumber']['Unique'])) {
             throw new UserExistedException();
         }
     }

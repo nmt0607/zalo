@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SignupRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,38 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function signup(Request $request) {
-        if (Validator::make($request->all(), [
-            'phonenumber' => 'required|regex:/^0[0-9]{9}$/'
-        ])->fails()) {
-            return [
-                'code' => 9997,
-                'message' => 'Method Is Invalid',
-                'data' => ['Số điện thoại không hợp lệ']
-            ];
-        }
-
-        if (Validator::make($request->all(), [
-            'phonenumber' => 'unique:users,phonenumber'
-        ])->fails()) {
-            return [
-                'code' => 9999,
-                'message' => 'Exception Error',
-                'data' => ['Số điện thoại đã đăng ký']
-            ];
-        }
-
-        
-        if (Validator::make($request->all(), [
-            'password' => 'required|alpha_num|between:6,10'
-        ])->fails()) {
-            return [
-                'code' => 9997,
-                'message' => 'Method Is Invalid',
-                'data' => ['Mật khẩu không hợp lệ']
-            ];
-        }
-
+    public function signup(SignupRequest $request) {
         $user = User::create([
             'name' => '',
             'phonenumber' => $request->phonenumber,
@@ -60,8 +30,6 @@ class AuthController extends Controller
                 'token' => $token
             ]
         ];
-
-        
     }
  
     public function logout(){
