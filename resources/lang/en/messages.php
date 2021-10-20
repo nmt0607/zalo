@@ -19,4 +19,5 @@ return [
     'maximum_num_of_images' => 'Maximum number of images',
     'not_access' => 'Not access',
     'action_done_previously' => 'Action has been done previously by this user',
+    'wrong_password' => 'Password is not correct'
 ];

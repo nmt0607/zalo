@@ -5,7 +5,7 @@ return [
     'post_not_existed' => 9992,
     'verify_code_incorrect' => 9993,
     'no_data' => 9994,
-    'user_invalid' => 9995,
+    'user_not_validated' => 9995,
     'user_existed' => 9996,
     'method_invalid' => 9997,
     'token_invalid' => 9998,
@@ -20,4 +20,5 @@ return [
     'maximum_num_of_images' => 1008,
     'not_access' => 1009,
     'action_done_previously' => 1010,
+    'wrong_password' => 1011
 ];
