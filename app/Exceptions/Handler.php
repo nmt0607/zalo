@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -36,6 +38,24 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (AuthenticationException $e, $request) {
+            if ($request->is('it4788/*') || $request->is('api/*')) {
+                return response()->json([
+                    'code' => config('response_code.token_invalid'),
+                    'message' => __('messages.token_invalid'),
+                ]);
+            }
+        });
+
+        $this->renderable(function (AuthorizationException $e, $request) {
+            if ($request->is('it4788/*') || $request->is('api/*')) {
+                return response()->json([
+                    'code' => config('response_code.not_access'),
+                    'message' => __('messages.not_access'),
+                ]);
+            }
         });
     }
 }
