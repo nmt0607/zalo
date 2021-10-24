@@ -12,4 +12,14 @@ class Post extends Model
     protected $fillable = [
         'content',
     ];
+
+    public function author()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }
