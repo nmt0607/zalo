@@ -18,18 +18,13 @@ Route::post('/signup', 'App\Http\Controllers\AuthController@signup');
 Route::post('/login', 'App\Http\Controllers\AuthController@login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    // Route::get('/users', 'App\Http\Controllers\UserController@index');
     Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
-    // Route::get('/posts', 'App\Http\Controllers\PostController@index');
-    // Route::get('/posts/{id}', 'App\Http\Controllers\PostController@show');
-    // Route::post('/posts', 'App\Http\Controllers\PostController@store');
-    // Route::put('/posts/{id}', 'App\Http\Controllers\PostController@update');
-    // Route::delete('/posts/{id}', 'App\Http\Controllers\PostController@destroy');
+    Route::post('/add_post', 'App\Http\Controllers\PostController@store');
+    Route::post('/get_post', 'App\Http\Controllers\PostController@show');
 });
 
 
-Route::post('/add_post', 'App\Http\Controllers\PostController@store');
-Route::post('/get_post', 'App\Http\Controllers\PostController@show');
+
 Route::get('/get_list_posts', 'App\Http\Controllers\PostController@get_list_posts');
 Route::post('/check_new_item', 'App\Http\Controllers\PostController@check_new_item');
 Route::post('/edit_post', 'App\Http\Controllers\PostController@edit_post');

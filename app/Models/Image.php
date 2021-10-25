@@ -11,6 +11,8 @@ class Image extends Model
 
     protected $fillable = [
         'link',
+        'imageable_type',
+        'imageable_id',
     ];
 
     public function imageable()
