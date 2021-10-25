@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Image;
 use App\Models\User;
@@ -114,12 +115,24 @@ class PostController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePostRequest $request)
     {
-        $request->validate([
-            'content' => 'required',
+        $post = $this->postService->update($request->id, $request->only(['described']));
+        $imageDel = $request->image_del;
+        $this->imageService->deleteMany($imageDel);
+
+        if ($request->has('image')) {
+            $this->imageService->createMany($request->image, $post);
+        }
+
+        if ($request->has('video')) {
+            // TODO: Save video to Firebase
+        }
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
         ]);
-        return Post::find($id)->update($request->all());
     }
 
     public function destroy(Request $request)

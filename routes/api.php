@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,7 +26,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::get('/get_list_posts', 'App\Http\Controllers\PostController@get_list_posts');
 Route::post('/check_new_item', 'App\Http\Controllers\PostController@check_new_item');
-Route::post('/edit_post', 'App\Http\Controllers\PostController@edit_post');
+Route::post('/edit_post', 'App\Http\Controllers\PostController@edit');
 Route::post('/delete_post', 'App\Http\Controllers\PostController@delete_post');
 Route::post('/report_post', 'App\Http\Controllers\PostController@report_post');
 Route::post('/like', 'App\Http\Controllers\PostController@like');
