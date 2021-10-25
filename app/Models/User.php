@@ -45,4 +45,16 @@ class User extends Authenticatable
     protected $casts = [
         // 'email_verified_at' => 'datetime',
     ];
+
+    public function image(){
+        return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public function block(){
+        return $this->belongsToMany(User::class, 'relationships', 'from_id', 'to_id')->where('status', 3);
+    }
+
+    public function blockedBy(){
+        return $this->belongsToMany(User::class, 'relationships', 'to_id', 'from_id')->where('status', 3);
+    }
 }

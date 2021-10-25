@@ -15,7 +15,7 @@ class CreateRelationshipsTable extends Migration
     {
         Schema::create('relationships', function (Blueprint $table) {
             $table->id();
-            $table->integer('form_id');
+            $table->integer('from_id');
             $table->integer('to_id');
             $table->integer('status')->comment('1:yêu cầu kết bạn, 2: bạn bè, 3: block');
             $table->timestamps();
