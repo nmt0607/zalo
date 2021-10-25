@@ -21,11 +21,13 @@ class PostService
     {
         $post = $this->findOrFail($id);
         $listBlockId = auth()->user()->block->pluck('id')->toArray();
-        if(in_array($post->user_id, $listBlockId))
+        if (in_array($post->user_id, $listBlockId)) {
             throw new PostNotExistedException();
+        }
         $listBlockedById = auth()->user()->blockedBy->pluck('id')->toArray();
-        if(in_array($post->user_id, $listBlockedById))
+        if (in_array($post->user_id, $listBlockedById)) {
             throw new PostNotExistedException();
+        }
         $post->like = $post->like();
         $post->comment = $post->comment();
         $post->is_liked = $post->isLiked();
@@ -42,6 +44,14 @@ class PostService
             'message' => __('messages.ok'),
             'data' => $post
         ]);
+    }
+
+    public function update($id, $attributes = [])
+    {
+        $post = $this->findOrFail($id);
+        $post->update($attributes);
+
+        return $post;
     }
 
     public function delete($id)
