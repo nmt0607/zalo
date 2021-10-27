@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -54,6 +55,15 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'code' => config('response_code.not_access'),
                     'message' => __('messages.not_access'),
+                ]);
+            }
+        });
+
+        $this->renderable(function (QueryException $e, $request) {
+            if ($request->is('it4788/*') || $request->is('api/*')) {
+                return response()->json([
+                    'code' => config('response_code.can_not_connect_database'),
+                    'message' => __('messages.can_not_connect_database'),
                 ]);
             }
         });
