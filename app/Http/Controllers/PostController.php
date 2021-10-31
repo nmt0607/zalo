@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\ReportPostRequest;
+use App\Http\Requests\CreateCommentRequest;
 use App\Models\Post;
 use App\Models\Image;
 use App\Models\User;
@@ -41,51 +44,25 @@ class PostController extends Controller
 
     public function show(Request $request)
     {
+
         return $this->postService->show($request->id);
     }
 
-    public function store(Request $request)
+    public function store(CreatePostRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'content' => 'required',
-            'image' => $request->video ? '' : 'required',
-            'video' => $request->image ? '' : 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'code' => config('response_code.parameter_not_enough'),
-                'message' => 'Parameter is not enough',
-            ]);
-        }
-
         $post = Post::create([
-            'content' => $request->content,
+            'content' => $request->described,
             'user_id' => auth()->id(),
         ]);
 
         $images = $request->file('image');
         if ($request->hasFile('image')) {
-            if (count($images) <= 4) {
-                $this->imageService->createMany($images, $post);
-            } else {
-                return response()->json([
-                    'code' => config('response_code.maximum_num_of_images'),
-                    'message' => 'Maximum number of images',
-                ]);
-            }
+            $this->imageService->createMany($images, $post);
         }
 
         $videos = $request->file('video');
         if ($request->hasFile('video')) {
-            if (count($videos) <= 4) {
-                $this->imageService->createMany($videos, $post);
-            } else {
-                return response()->json([
-                    'code' => config('response_code.maximum_num_of_images'),
-                    'message' => 'Maximum number of images',
-                ]);
-            }
+            $this->imageService->createMany($videos, $post);
         }
         return response()->json([
             'code' => config('response_code.ok'),
@@ -128,6 +105,15 @@ class PostController extends Controller
 
         $this->postService->delete($postId);
 
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+        ]);
+    }
+
+    public function report(ReportPostRequest $request)
+    {
+        $post = $this->postService->findOrFail($request->id);
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),

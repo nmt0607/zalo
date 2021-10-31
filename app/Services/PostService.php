@@ -34,7 +34,7 @@ class PostService
         $post->images = $post->images;
         $post->videos = $post->videos;
         $post->author = $post->author;
-        $post->author->image = $post->author->image;
+        $post->author->image = $post->author->avatar;
         $post->is_blocked = $post->isBlocked();
         $post->can_edit = $post->canEdit();
         $post->can_comment = $post->canComment();
