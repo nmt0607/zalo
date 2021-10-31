@@ -10,7 +10,7 @@ use App\Services\ImageService;
 use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -48,17 +48,16 @@ class PostController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'content' => 'required',
-            'image' => $request->video?'':'required',
-            'video' => $request->image?'':'required',
+            'image' => $request->video ? '' : 'required',
+            'video' => $request->image ? '' : 'required',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'code' => config('response_code.parameter_not_enough'),
                 'message' => 'Parameter is not enough',
             ]);
         }
-
 
         $post = Post::create([
             'content' => $request->content,
@@ -66,19 +65,10 @@ class PostController extends Controller
         ]);
 
         $images = $request->file('image');
-        if($request->hasFile('image')){
-            if (count($images) <= 4){
-                foreach ($images as $imageItem) {
-                    $imageName = time().'_'.$imageItem->getClientOriginalName();
-                    $imageLink = $imageItem->storeAs('upload', $imageName, 'local');
-                    $image = Image::create([
-                        'link' => $imageLink,
-                        'imageable_type' => 'App\\Models\\Post',
-                        'imageable_id' => $post->id,
-                    ]);
-                }
-            }
-            else{
+        if ($request->hasFile('image')) {
+            if (count($images) <= 4) {
+                $this->imageService->createMany($images, $post);
+            } else {
                 return response()->json([
                     'code' => config('response_code.maximum_num_of_images'),
                     'message' => 'Maximum number of images',
@@ -87,19 +77,10 @@ class PostController extends Controller
         }
 
         $videos = $request->file('video');
-        if($request->hasFile('video')){
-            if (count($videos) <= 4){
-                foreach ($videos as $videoItem) {
-                    $videoName = time().'_'.$videoItem->getClientOriginalName();
-                    $videoLink = $videoItem->storeAs('upload', $videoName, 'local');
-                    $video = Image::create([
-                        'link' => $videoLink,
-                        'imageable_type' => 'App\\Models\\Post',
-                        'imageable_id' => $post->id,
-                    ]);
-                }
-            }
-            else{
+        if ($request->hasFile('video')) {
+            if (count($videos) <= 4) {
+                $this->imageService->createMany($videos, $post);
+            } else {
                 return response()->json([
                     'code' => config('response_code.maximum_num_of_images'),
                     'message' => 'Maximum number of images',
@@ -110,8 +91,8 @@ class PostController extends Controller
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => [
-                        'id' => $post->id,
-                    ]
+                'id' => $post->id,
+            ]
         ]);
     }
 
