@@ -3,36 +3,43 @@
 namespace App\Services;
 
 use App\Models\Image;
-use Kreait\Laravel\Firebase\Facades\Firebase;
+use Google\Cloud\Storage\Bucket;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 class ImageService
 {
-    public function create($file, $parentModel = null)
-    {
-        $file_name = $file->getClientOriginalName();
-        $localfolder = public_path('firebase-temp-uploads') . '/';
-        if ($file->move($localfolder, $file_name)) {
-            $uploadedfile = fopen($localfolder . $file_name, 'r');
-            app('firebase.storage')->getBucket()->upload($uploadedfile, ['name' => $file_name]);
-            unlink($localfolder . $file_name);
-        }
-        else {
-            // throw error
-        }
+    /**
+     * @var Bucket
+     */
+    protected $bucket;
 
-        $expiresAt = strtotime('+1 year');  
-        $imageReference = app('firebase.storage')->getBucket()->object($file_name);  
-        if ($imageReference->exists())
+    public function __construct()
+    {
+        $this->bucket = app('firebase.storage')->getBucket();
+    }
+
+    public function find($id)
+    {
+        return Image::find($id);
+    }
+
+    public function create(UploadedFile $file, $parentModel = null)
+    {
+        $filename = Str::random(40) . '.' . $file->extension();
+        $imageReference = $this->bucket->upload($file->get(), ['name' => $filename]);
+
+        $expiresAt = strtotime('+1 year');
+        if ($imageReference->exists()) {
             $link = $imageReference->signedUrl($expiresAt);
+        }
 
         $image = Image::create([
             'link' => $link,
+            'name' => $filename,
             'imageable_type' => get_class($parentModel),
             'imageable_id' => $parentModel->id,
         ]);
-        // if ($parentModel !== null) {
-        //     $image->imageable()->associate($parentModel);
-        // }
 
         return $image;
     }
@@ -49,7 +56,11 @@ class ImageService
 
     public function delete($id)
     {
-        return Image::destroy($id);
+        $image = $this->find($id);
+        $imageReference = $this->bucket->object($image->name);
+        $imageReference->delete();
+
+        return $image->delete();
     }
 
     public function deleteMany($ids)
