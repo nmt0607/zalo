@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CheckNewItemRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\ReportPostRequest;
 use App\Http\Requests\CreateCommentRequest;
+use App\Http\Requests\GetListPostsRequest;
 use App\Models\Post;
 use App\Models\Image;
 use App\Models\User;
@@ -44,8 +46,11 @@ class PostController extends Controller
 
     public function show(Request $request)
     {
-
-        return $this->postService->show($request->id);
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => $this->postService->show($request->id)
+        ]);
     }
 
     public function store(CreatePostRequest $request)
@@ -72,6 +77,60 @@ class PostController extends Controller
             ]
         ]);
     }
+
+    public function get_list_posts(GetListPostsRequest $request)
+    {
+        $last_id = (int)$request->last_id;
+        $index = (int)$request->index;
+        $last_index = $index - 1;
+        $count = (int)$request->count;
+        if ($index == 0) {
+            $posts_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->take($count)->pluck('id')->toArray();
+            $new_items = 0;
+        }
+        else {
+            $all_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
+            $new_items = array_search($last_id, $all_ids) - $last_index;
+            $key = $new_items + $index;
+            $posts_ids = array_slice($all_ids, $key, $count);
+            // $posts = Post::whereIn('id', $posts_ids);
+        }
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => [
+                'posts' => array_map(function ($id) {
+                    return $this->postService->show($id);
+                }, $posts_ids),
+                'last_id' => end($posts_ids),
+                'new_items' => $new_items
+            ]
+        ]);
+    }
+
+    public function check_new_item(CheckNewItemRequest $request)
+    {
+        $last_id = (int)$request->last_id;
+        $category_id = (int)$request->category_id;
+        $all_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
+        $new_items = array_search($last_id, $all_ids);
+        $posts_ids = array_slice($all_ids, 0, $new_items);
+        // $posts = Post::whereIn('id', $posts_ids);
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => [
+                'new_items' => $new_items,
+                'posts' => array_map(function ($id) {
+                    return $this->postService->show($id);
+                }, $posts_ids),
+            ]
+        ]);
+    }
+
+
 
     public function update(UpdatePostRequest $request)
     {

@@ -39,11 +39,7 @@ class PostService
         $post->can_edit = $post->canEdit();
         $post->can_comment = $post->canComment();
 
-        return response()->json([
-            'code' => config('response_code.ok'),
-            'message' => __('messages.ok'),
-            'data' => $post
-        ]);
+        return $post;
     }
 
     public function update($id, $attributes = [])

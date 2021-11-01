@@ -57,4 +57,16 @@ class User extends Authenticatable
     public function blockedBy(){
         return $this->belongsToMany(User::class, 'relationships', 'to_id', 'from_id')->where('status', 3);
     }
+
+    public function posts(){
+        return $this->hasMany(Post::class);
+    }
+
+    public function friend(){
+        return $this->belongsToMany(User::class, 'relationships', 'from_id', 'to_id')->where('status', 2);
+    }
+
+    public function friendedBy(){
+        return $this->belongsToMany(User::class, 'relationships', 'to_id', 'from_id')->where('status', 2);
+    }
 }
