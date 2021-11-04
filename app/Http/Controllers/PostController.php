@@ -88,10 +88,10 @@ class PostController extends Controller
         $last_index = $index - 1;
         $count = (int)$request->count;
         if ($index == 0) {
-            $posts_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->take($count)->pluck('id')->toArray();
+            $posts_ids = Post::whereIn('user_id', auth()->user()->friends()->pluck('id'))->orderBy('updated_at', 'desc')->take($count)->pluck('id')->toArray();
             $new_items = 0;
         } else {
-            $all_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
+            $all_ids = Post::whereIn('user_id', auth()->user()->friends()->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
             if (array_search($last_id, $all_ids) === false) {
                 throw new LastPostNotExistException();
             }
@@ -118,7 +118,7 @@ class PostController extends Controller
     {
         $last_id = (int)$request->last_id;
         $category_id = (int)$request->category_id;
-        $all_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
+        $all_ids = Post::whereIn('user_id', auth()->user()->friends()->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
         $new_items = array_search($last_id, $all_ids);
         if (array_search($last_id, $all_ids) === false) {
             throw new LastPostNotExistException();

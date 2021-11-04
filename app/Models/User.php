@@ -46,27 +46,38 @@ class User extends Authenticatable
         // 'email_verified_at' => 'datetime',
     ];
 
-    public function avatar(){
+    public function avatar()
+    {
         return $this->morphOne(Image::class, 'imageable');
     }
 
-    public function block(){
+    public function block()
+    {
         return $this->belongsToMany(User::class, 'relationships', 'from_id', 'to_id')->where('status', 3);
     }
 
-    public function blockedBy(){
+    public function blockedBy()
+    {
         return $this->belongsToMany(User::class, 'relationships', 'to_id', 'from_id')->where('status', 3);
     }
 
-    public function posts(){
+    public function posts()
+    {
         return $this->hasMany(Post::class);
     }
 
-    public function friend(){
+    public function friend()
+    {
         return $this->belongsToMany(User::class, 'relationships', 'from_id', 'to_id')->where('status', 2);
     }
 
-    public function friendedBy(){
+    public function friendedBy()
+    {
         return $this->belongsToMany(User::class, 'relationships', 'to_id', 'from_id')->where('status', 2);
+    }
+
+    public function friends()
+    {
+        return $this->friend->merge($this->friendedBy);
     }
 }
