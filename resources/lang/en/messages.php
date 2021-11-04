@@ -19,5 +19,6 @@ return [
     'maximum_num_of_images' => 'Maximum number of images',
     'not_access' => 'Not access',
     'action_done_previously' => 'Action has been done previously by this user',
-    'wrong_password' => 'Password is not correct'
+    'wrong_password' => 'Password is not correct',
+    'last_post_not_exist' => 'Last post id is not exist, send the pre-last post instead'
 ];

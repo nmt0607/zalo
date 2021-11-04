@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\LastPostNotExistException;
 use App\Http\Requests\CheckNewItemRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\CreatePostRequest;
@@ -90,6 +91,9 @@ class PostController extends Controller
         }
         else {
             $all_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
+            if (array_search($last_id, $all_ids)===false) {
+                throw new LastPostNotExistException();
+            }
             $new_items = array_search($last_id, $all_ids) - $last_index;
             $key = $new_items + $index;
             $posts_ids = array_slice($all_ids, $key, $count);
@@ -115,6 +119,9 @@ class PostController extends Controller
         $category_id = (int)$request->category_id;
         $all_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
         $new_items = array_search($last_id, $all_ids);
+        if (array_search($last_id, $all_ids)===false) {
+            throw new LastPostNotExistException();
+        }
         $posts_ids = array_slice($all_ids, 0, $new_items);
         // $posts = Post::whereIn('id', $posts_ids);
 

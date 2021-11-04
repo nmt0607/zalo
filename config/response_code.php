@@ -20,5 +20,6 @@ return [
     'maximum_num_of_images' => 1008,
     'not_access' => 1009,
     'action_done_previously' => 1010,
-    'wrong_password' => 1011
+    'wrong_password' => 1011,
+    'last_post_not_exist' => 1012
 ];
