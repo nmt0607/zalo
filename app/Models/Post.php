@@ -51,16 +51,13 @@ class Post extends Model
 
     public function canComment()
     {
-        if(auth()->id() == $this->user_id){
+        if (auth()->id() == $this->user_id) {
             return true;
-        }
-        elseif( Relationship::where('from_id', auth()->id())->where('to_id', $this->user_id)->where('status', 2)){
+        } elseif (Relationship::where('from_id', auth()->id())->where('to_id', $this->user_id)->where('status', 2)) {
             return true;
-        }
-        elseif( Relationship::where('to_id', auth()->id())->where('from_id', $this->user_id)->where('status', 2)){
+        } elseif (Relationship::where('to_id', auth()->id())->where('from_id', $this->user_id)->where('status', 2)) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -68,5 +65,10 @@ class Post extends Model
     public function canEdit()
     {
         return auth()->id() == $this->user_id;
+    }
+
+    public function isReported()
+    {
+        return false;
     }
 }

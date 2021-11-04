@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\LastPostNotExistException;
+use App\Exceptions\PostNotExistedException;
 use App\Http\Requests\CheckNewItemRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\CreatePostRequest;
@@ -11,6 +12,7 @@ use App\Http\Requests\CreateCommentRequest;
 use App\Http\Requests\GetListPostsRequest;
 use App\Models\Post;
 use App\Models\Image;
+use App\Models\Like;
 use App\Models\User;
 use App\Services\ImageService;
 use App\Services\PostService;
@@ -88,10 +90,9 @@ class PostController extends Controller
         if ($index == 0) {
             $posts_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->take($count)->pluck('id')->toArray();
             $new_items = 0;
-        }
-        else {
+        } else {
             $all_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
-            if (array_search($last_id, $all_ids)===false) {
+            if (array_search($last_id, $all_ids) === false) {
                 throw new LastPostNotExistException();
             }
             $new_items = array_search($last_id, $all_ids) - $last_index;
@@ -119,7 +120,7 @@ class PostController extends Controller
         $category_id = (int)$request->category_id;
         $all_ids = Post::whereIn('user_id', auth()->user()->friend->merge(auth()->user()->friendedBy)->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
         $new_items = array_search($last_id, $all_ids);
-        if (array_search($last_id, $all_ids)===false) {
+        if (array_search($last_id, $all_ids) === false) {
             throw new LastPostNotExistException();
         }
         $posts_ids = array_slice($all_ids, 0, $new_items);
@@ -183,6 +184,37 @@ class PostController extends Controller
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
+        ]);
+    }
+
+    public function like(Request $request)
+    {
+        $post = $this->postService->findOrFail($request->id);
+
+        if ($post->isReported()) {
+            return response()->json([
+                'code' => config('response_code.action_done_previously'),
+                'message' => __('messages.action_done_previously')
+            ]);
+        }
+
+        if ($post->isLiked()) {
+            Like::where('user_id', auth()->user()->id)->where('post_id', $post->id)->delete();
+        } else {
+            $like = Like::create([
+                'user_id' => auth()->user()->id,
+                'post_id' => $post->id
+            ]);
+        }
+
+        $like = $this->postService->findOrFail($request->id)->like();
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => [
+                'like' => $like
+            ]
         ]);
     }
 }

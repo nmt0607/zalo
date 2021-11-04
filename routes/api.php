@@ -25,6 +25,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/set_comment', 'App\Http\Controllers\CommentController@setComment');
     Route::post('/get_list_posts', 'App\Http\Controllers\PostController@get_list_posts');
     Route::post('/check_new_item', 'App\Http\Controllers\PostController@check_new_item');
+    Route::post('/like', 'App\Http\Controllers\PostController@like');
     
 });
 
@@ -32,7 +33,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::post('/edit_post', 'App\Http\Controllers\PostController@edit');
 Route::post('/delete_post', 'App\Http\Controllers\PostController@delete');
-Route::post('/like', 'App\Http\Controllers\PostController@like');
 
 
 Route::post('/del_comment', 'App\Http\Controllers\CommentController@del_comment');
