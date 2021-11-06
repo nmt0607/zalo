@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
             }
         });
 
-        $this->renderable(function (AuthorizationException $e, $request) {
+        $this->renderable(function (AccessDeniedHttpException $e, $request) {
             if ($request->is('it4788/*') || $request->is('api/*')) {
                 return response()->json([
                     'code' => config('response_code.not_access'),
