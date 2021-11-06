@@ -3,22 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\LastPostNotExistException;
-use App\Exceptions\PostNotExistedException;
 use App\Http\Requests\CheckNewItemRequest;
-use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\CreatePostRequest;
-use App\Http\Requests\ReportPostRequest;
-use App\Http\Requests\CreateCommentRequest;
 use App\Http\Requests\GetListPostsRequest;
-use App\Models\Post;
-use App\Models\Image;
+use App\Http\Requests\ReportPostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Like;
-use App\Models\User;
+use App\Models\Post;
 use App\Services\ImageService;
 use App\Services\PostService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -142,8 +136,10 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request)
     {
-        $post = $this->postService->update($request->id, $request->only(['described']));
-        $imageDel = $request->image_del;
+        $post = $this->postService->update($request->id, [
+            'content' => $request->described,
+        ]);
+        $imageDel = $request->image_del ?? [];
         $this->imageService->deleteMany($imageDel);
 
         if ($request->has('image')) {
@@ -151,7 +147,7 @@ class PostController extends Controller
         }
 
         if ($request->has('video')) {
-            // TODO: Save video to Firebase
+            $this->imageService->create($request->video, $post);
         }
 
         return response()->json([
