@@ -23,15 +23,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_post', 'App\Http\Controllers\PostController@update');
     Route::post('/delete_post', 'App\Http\Controllers\PostController@destroy');
     Route::post('/report_post', 'App\Http\Controllers\PostController@report');
-    Route::post('/get_comment', 'App\Http\Controllers\CommentController@getComment');
-    Route::post('/set_comment', 'App\Http\Controllers\CommentController@setComment');
     Route::post('/get_list_posts', 'App\Http\Controllers\PostController@get_list_posts');
     Route::post('/check_new_item', 'App\Http\Controllers\PostController@check_new_item');
     Route::post('/like', 'App\Http\Controllers\PostController@like');
+
+    Route::post('/get_comment', 'App\Http\Controllers\CommentController@getComment');
+    Route::post('/set_comment', 'App\Http\Controllers\CommentController@setComment');
+    Route::post('/edit_comment', 'App\Http\Controllers\CommentController@update');
 });
 
 Route::post('/del_comment', 'App\Http\Controllers\CommentController@del_comment');
-Route::post('/edit_comment', 'App\Http\Controllers\CommentController@edit_comment');
 
 Route::post('/get_list_conversation', 'App\Http\Controllers\ConversationController@get_list_conversation');
 Route::post('/get_conversation', 'App\Http\Controllers\ConversationController@get_conversation');

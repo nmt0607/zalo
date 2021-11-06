@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\PostNotExistedException;
-use App\Models\Post;
 use App\Models\Comment;
 
 class CommentService
@@ -18,9 +16,20 @@ class CommentService
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => $comment,
-            'is_blocked'=> $isBlocked?1:0,
+            'is_blocked'=> $isBlocked ? 1 : 0,
         ]);
     }
 
+    public function findOrFail($id)
+    {
+        return Comment::findOrFail($id);
+    }
 
+    public function update($id, $attributes = [])
+    {
+        $comment = Comment::findOrFail($id);
+        $comment->update($attributes);
+
+        return $comment;
+    }
 }

@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCommentRequest;
-use App\Models\Post;
-use App\Models\Image;
-use App\Models\User;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
-use App\Services\PostService;
 use App\Services\CommentService;
+use App\Services\PostService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
@@ -45,7 +41,25 @@ class CommentController extends Controller
         return $this->commentService->show($comment->id);
     }
 
-    public function getComment(Request $request){
+    public function getComment(Request $request)
+    {
         return $this->commentService->show($request->id);
+    }
+
+    public function update(UpdateCommentRequest $request)
+    {
+        $commentId = $request->id_com;
+        $comment = $this->commentService->findOrFail($commentId);
+        $this->authorize('update', $comment);
+
+        $this->commentService->update(
+            $commentId,
+            $request->only(['comment'])
+        );
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+        ]);
     }
 }
