@@ -32,4 +32,9 @@ class CommentService
 
         return $comment;
     }
+
+    public function delete($id)
+    {
+        return Comment::destroy($id);
+    }
 }

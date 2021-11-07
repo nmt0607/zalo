@@ -62,4 +62,19 @@ class CommentController extends Controller
             'message' => __('messages.ok'),
         ]);
     }
+
+    public function destroy(Request $request)
+    {
+        $commentId = $request->id_com;
+        $comment = $this->commentService->findOrFail($commentId);
+        $this->authorize('delete', $comment);
+
+        // TODO: handle logic when the post having this comment was blocked
+        $this->commentService->delete($commentId);
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+        ]);
+    }
 }

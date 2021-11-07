@@ -27,4 +27,20 @@ class CommentPolicy
         return $user->id === $comment->user_id
             && $user->blockedBy->contains($comment->post->author);
     }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Comment  $comment
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function delete(User $user, Comment $comment)
+    {
+        if (!$user->isActive()) {
+            throw new UserNotValidatedException();
+        }
+
+        return $user->id === $comment->user_id;
+    }
 }
