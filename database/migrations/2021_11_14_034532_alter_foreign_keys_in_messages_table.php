@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterForeignKeysInCommentsTable extends Migration
+class AlterForeignKeysInMessagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,19 @@ class AlterForeignKeysInCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->change();
-            $table->unsignedBigInteger('post_id')->change();
+        Schema::table('messages', function (Blueprint $table) {
+            $table->unsignedBigInteger('from_id')->change();
+            $table->unsignedBigInteger('to_id')->change();
             $table
-                ->foreign('user_id')
+                ->foreign('from_id')
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table
-                ->foreign('post_id')
+                ->foreign('to_id')
                 ->references('id')
-                ->on('posts')
+                ->on('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
         });
@@ -38,9 +38,9 @@ class AlterForeignKeysInCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropForeign(['post_id']);
+        Schema::table('messages', function (Blueprint $table) {
+            $table->dropForeign(['from_id']);
+            $table->dropForeign(['to_id']);
         });
     }
 }
