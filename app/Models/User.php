@@ -82,6 +82,11 @@ class User extends Authenticatable
         return $this->friend->merge($this->friendedBy);
     }
 
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_participants');
+    }
+
     public function isActive()
     {
         return $this->state === 'active';
