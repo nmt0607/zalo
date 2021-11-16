@@ -39,6 +39,11 @@ class Post extends Model
         return Comment::where('post_id', $this->id)->count();
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'post_id');
+    }
+
     public function isLiked()
     {
         return in_array(auth()->id(), Like::where('post_id', $this->id)->pluck('user_id')->toArray());

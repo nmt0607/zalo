@@ -8,7 +8,7 @@ use App\Rules\VideoDuration;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 
-class CreateCommentRequest extends CustomFormRequest
+class GetCommentRequest extends CustomFormRequest
 {
     /**
      * Handle failed validation for needed fields
@@ -30,9 +30,6 @@ class CreateCommentRequest extends CustomFormRequest
         return [
 
             'id' => [
-                'required',
-            ],
-            'comment' => [
                 'required',
             ],
             'index' => [
