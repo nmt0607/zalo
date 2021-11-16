@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
+use App\Http\Requests\GetCommentRequest;
+use App\Models\Post;
+use App\Models\Image;
+use App\Models\User;
 use App\Models\Comment;
 use App\Services\CommentService;
 use App\Services\PostService;
@@ -38,12 +42,35 @@ class CommentController extends Controller
             'post_id' => $post->id,
             'comment' => $request->comment,
         ]);
-        return $this->commentService->show($comment->id);
+        $post->comments = $post->comments()->orderBy('created_at', 'desc')->take($request->count)->get();
+        foreach($post->comments as $comment ) {
+            $comment->poster = $comment->poster;
+            $comment->poster->avatar = $comment->poster->avatar;
+        }
+        $isBlocked = in_array($post->user_id, auth()->user()->blockedBy->pluck('id')->toArray());
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => $post->comments,
+            'is_blocked'=> $isBlocked?1:0,
+        ]);
     }
 
-    public function getComment(Request $request)
-    {
-        return $this->commentService->show($request->id);
+
+    public function getComment(GetCommentRequest $request){
+        $post = $this->postService->findOrFail($request->id);
+        $post->comments = $post->comments()->orderBy('created_at', 'desc')->skip($request->index-1)->take($request->count)->get();
+        foreach($post->comments as $comment ) {
+            $comment->poster = $comment->poster;
+            $comment->poster->avatar = $comment->poster->avatar;
+        }
+        $isBlocked = in_array($post->user_id, auth()->user()->blockedBy->pluck('id')->toArray());
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => $post->comments,
+            'is_blocked'=> $isBlocked?1:0,
+        ]);
     }
 
     public function update(UpdateCommentRequest $request)
