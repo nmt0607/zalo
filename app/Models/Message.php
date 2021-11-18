@@ -28,4 +28,8 @@ class Message extends Model
             ? config('define.message.status.read')
             : config('define.message.status.unread');
     }
+
+    public function sender(){
+        return $this->belongsTo(User::class, 'from_id');
+    }
 }
