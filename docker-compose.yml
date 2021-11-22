@@ -23,7 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
-            - meilisearch
+            - redis
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -43,16 +43,16 @@ services:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
-    meilisearch:
-        image: 'getmeili/meilisearch:latest'
+    redis:
+        image: 'redis:alpine'
         ports:
-            - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
         volumes:
-            - 'sailmeilisearch:/data.ms'
+            - 'sailredis:/data'
         networks:
             - sail
         healthcheck:
-            test: ["CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health"]
+            test: ["CMD", "redis-cli", "ping"]
             retries: 3
             timeout: 5s
 networks:
@@ -61,5 +61,5 @@ networks:
 volumes:
     sailmysql:
         driver: local
-    sailmeilisearch:
+    sailredis:
         driver: local

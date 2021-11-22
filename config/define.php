@@ -17,4 +17,7 @@ return [
             'unread' => 1,
         ]
     ],
+    'events' => [
+        'authenticating' => 'authenticating',
+    ]
 ];
