@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\AuthenticatingWithToken;
+use App\Events\ConversationJoining;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
 
@@ -34,6 +35,7 @@ class RedisSubscribe extends Command
         parent::__construct();
         $this->events = [
             config('define.events.authenticating') => new AuthenticatingWithToken(),
+            config('define.events.conversation_joining') => new ConversationJoining(),
         ];
     }
 
@@ -45,7 +47,7 @@ class RedisSubscribe extends Command
     public function handle()
     {
         Redis::connection('subscription')
-            ->subscribe(['authentication'], function ($message) {
+            ->subscribe(['authentication', 'chat'], function ($message) {
                 [
                     'event' => $eventName,
                     'data' =>  $data,

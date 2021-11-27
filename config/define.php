@@ -19,5 +19,7 @@ return [
     ],
     'events' => [
         'authenticating' => 'authenticating',
+        'conversation_joining' => 'joinchat',
+        'conversation_joined' => 'conversation_joined',
     ]
 ];

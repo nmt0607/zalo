@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\AuthenticatingWithToken;
+use App\Events\ConversationJoining;
 use App\Listeners\AuthenticateToken;
+use App\Listeners\JoinConversation;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
@@ -17,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         AuthenticatingWithToken::class => [
             AuthenticateToken::class,
+        ],
+        ConversationJoining::class => [
+            JoinConversation::class,
         ],
     ];
 
