@@ -24,4 +24,5 @@ return [
     'user_not_existed' => 'User not existed',
     'conversation_not_existed' => 'Conversation not existed',
     'message_not_existed' => 'Message not existed',
+    'new_password_too_similar' => 'New password is too similar to the old password. Please use another password',
 ];

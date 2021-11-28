@@ -31,10 +31,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/set_comment', 'App\Http\Controllers\CommentController@setComment');
     Route::post('/edit_comment', 'App\Http\Controllers\CommentController@update');
     Route::post('/del_comment', 'App\Http\Controllers\CommentController@destroy');
+
     Route::post('/get_list_conversation', 'App\Http\Controllers\ConversationController@index');
     Route::post('/get_conversation', 'App\Http\Controllers\ConversationController@getConversation');
-    Route::post('/delete_message', 'App\Http\Controllers\MessageController@delete_message');
     Route::post('/delete_conversation', 'App\Http\Controllers\ConversationController@delete_conversation');
+    
+    Route::post('/delete_message', 'App\Http\Controllers\MessageController@delete_message');
+
+    Route::post('/get_user_info', 'App\Http\Controllers\UserController@get_user_info');
+    Route::post('/set_user_info', 'App\Http\Controllers\UserController@set_user_info');
+    Route::post('/change_password', 'App\Http\Controllers\UserController@change_password');
 });
 
 Route::post('/get_admin_permission', 'App\Http\Controllers\AdminController@get_admin_permission');
@@ -55,9 +61,6 @@ Route::post('/get_requested_friend', 'App\Http\Controllers\FriendController@get_
 Route::post('/set_accept_friend', 'App\Http\Controllers\FriendController@set_accept_friend');
 Route::post('/get_suggested_list_friends', 'App\Http\Controllers\FriendController@get_suggested_list_friends');
 
-Route::post('/get_user_info', 'App\Http\Controllers\UserController@get_user_info');
-Route::post('/set_user_info', 'App\Http\Controllers\UserController@set_user_info');
-Route::post('/change_password', 'App\Http\Controllers\UserController@change_password');
 
 Route::post('/set_block_user', 'App\Http\Controllers\BlockController@set_block_user');
 Route::post('/set_block_diary', 'App\Http\Controllers\BlockController@set_block_diary');
