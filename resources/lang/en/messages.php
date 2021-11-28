@@ -23,4 +23,5 @@ return [
     'last_post_not_exist' => 'Last post id is not exist, send the pre-last post instead',
     'user_not_existed' => 'User not existed',
     'conversation_not_existed' => 'Conversation not existed',
+    'message_not_existed' => 'Message not existed',
 ];

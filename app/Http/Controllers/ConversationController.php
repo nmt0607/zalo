@@ -81,23 +81,6 @@ class ConversationController extends Controller
         ]);
     }
 
-    public function delete_message(DeleteConversationRequest $request)
-    {
-        if (isset($request->partner_id)) {
-            Message::where('from_id', auth()->user()->id)->where('to_id', $request->partner_id)->delete();
-            Message::where('from_id', $request->partner_id)->where('to_id', auth()->user()->id)->delete();
-
-            return [
-                'code' => config('response_code.ok'),
-                'message' => __('messages.ok')
-            ];
-        }
-
-        if (isset($request->conversation_id)) {
-            // Message::where('from_id', auth()->user()->id)->where('to_id', $request->parter_id)->delete();
-        }
-    }
-
     public function delete_conversation(DeleteConversationRequest $request)
     {
         if (isset($request->partner_id)) {

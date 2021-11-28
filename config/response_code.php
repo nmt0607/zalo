@@ -24,4 +24,5 @@ return [
     'last_post_not_exist' => 1012,
     'user_not_existed' => 1013,
     'conversation_not_existed' => 1014,
+    'message_not_existed' => 1015,
 ];
