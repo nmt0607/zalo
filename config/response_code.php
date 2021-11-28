@@ -21,5 +21,7 @@ return [
     'not_access' => 1009,
     'action_done_previously' => 1010,
     'wrong_password' => 1011,
-    'last_post_not_exist' => 1012
+    'last_post_not_exist' => 1012,
+    'user_not_existed' => 1013,
+    'conversation_not_existed' => 1014,
 ];

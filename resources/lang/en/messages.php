@@ -20,5 +20,7 @@ return [
     'not_access' => 'Not access',
     'action_done_previously' => 'Action has been done previously by this user',
     'wrong_password' => 'Password is not correct',
-    'last_post_not_exist' => 'Last post id is not exist, send the pre-last post instead'
+    'last_post_not_exist' => 'Last post id is not exist, send the pre-last post instead',
+    'user_not_existed' => 'User not existed',
+    'conversation_not_existed' => 'Conversation not existed',
 ];

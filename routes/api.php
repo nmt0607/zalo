@@ -33,10 +33,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/del_comment', 'App\Http\Controllers\CommentController@destroy');
     Route::post('/get_list_conversation', 'App\Http\Controllers\ConversationController@index');
     Route::post('/get_conversation', 'App\Http\Controllers\ConversationController@getConversation');
+    Route::post('/delete_message', 'App\Http\Controllers\ConversationController@delete_message');
+    Route::post('/delete_conversation', 'App\Http\Controllers\ConversationController@delete_conversation');
 });
-
-Route::post('/delete_message', 'App\Http\Controllers\ConversationController@delete_message');
-Route::post('/delete_conversation', 'App\Http\Controllers\ConversationController@delete_conversation');
 
 Route::post('/get_admin_permission', 'App\Http\Controllers\AdminController@get_admin_permission');
 Route::post('/get_user_list', 'App\Http\Controllers\AdminController@get_user_list');
