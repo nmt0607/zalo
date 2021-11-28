@@ -19,7 +19,7 @@ class AuthController extends Controller
             'name' => '',
             'phonenumber' => $request->phonenumber,
             'password' => bcrypt($request->password),
-            'state' => 'active',
+            'state' => 'inactive',
             'role' => 'user'
         ]);
 
@@ -42,7 +42,7 @@ class AuthController extends Controller
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => [
-                "Đăng xuất thành công"
+                'message' => 'Logged out'
             ]
         ];
     }

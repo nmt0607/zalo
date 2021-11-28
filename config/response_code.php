@@ -29,4 +29,7 @@ return [
     'cant_self_block' => 1017,
     'already_block' => 1018,
     'already_unblock' => 1019,
+    'cant_get_verify_code' => 1020,
+    'cant_verify_code' => 1021,
+    'account_already_active' => 1022,
 ];

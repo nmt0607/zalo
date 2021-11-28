@@ -28,4 +28,7 @@ return [
     'cant_self_block' => 'You can not block your own account',
     'already_block' => 'You already block this person',
     'already_unblock' => 'You already unblock this person',
+    'cant_get_verify_code' => 'An error occurred while getting verify code',
+    'cant_verify_code' => 'An error occurred while verifying code',
+    'account_already_active' => 'This account has already been active',
 ];
