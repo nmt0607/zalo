@@ -17,7 +17,7 @@ class CreateRelationshipsTable extends Migration
             $table->id();
             $table->integer('from_id');
             $table->integer('to_id');
-            $table->integer('status')->comment('1:yêu cầu kết bạn, 2: bạn bè, 3: block');
+            $table->integer('status')->comment('1:yêu cầu kết bạn, 2: bạn bè, 3: block user, 4: block diary');
             $table->timestamps();
         });
     }

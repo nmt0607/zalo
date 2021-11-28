@@ -25,5 +25,8 @@ return [
     'user_not_existed' => 1013,
     'conversation_not_existed' => 1014,
     'message_not_existed' => 1015,
-    'new_password_too_similar' => 1016
+    'new_password_too_similar' => 1016,
+    'cant_self_block' => 1017,
+    'already_block' => 1018,
+    'already_unblock' => 1019,
 ];

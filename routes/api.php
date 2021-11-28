@@ -41,6 +41,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/get_user_info', 'App\Http\Controllers\UserController@get_user_info');
     Route::post('/set_user_info', 'App\Http\Controllers\UserController@set_user_info');
     Route::post('/change_password', 'App\Http\Controllers\UserController@change_password');
+    
+    Route::post('/set_block_user', 'App\Http\Controllers\BlockController@set_block_user');
+    Route::post('/set_block_diary', 'App\Http\Controllers\BlockController@set_block_diary');
 });
 
 Route::post('/get_admin_permission', 'App\Http\Controllers\AdminController@get_admin_permission');
@@ -62,8 +65,6 @@ Route::post('/set_accept_friend', 'App\Http\Controllers\FriendController@set_acc
 Route::post('/get_suggested_list_friends', 'App\Http\Controllers\FriendController@get_suggested_list_friends');
 
 
-Route::post('/set_block_user', 'App\Http\Controllers\BlockController@set_block_user');
-Route::post('/set_block_diary', 'App\Http\Controllers\BlockController@set_block_diary');
 
 Route::post('/get_verify_code', 'App\Http\Controllers\VerifyCodeController@get_verify_code');
 Route::post('/check_verify_code', 'App\Http\Controllers\VerifyCodeController@check_verify_code');

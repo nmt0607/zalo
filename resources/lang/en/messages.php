@@ -25,4 +25,7 @@ return [
     'conversation_not_existed' => 'Conversation not existed',
     'message_not_existed' => 'Message not existed',
     'new_password_too_similar' => 'New password is too similar to the old password. Please use another password',
+    'cant_self_block' => 'You can not block your own account',
+    'already_block' => 'You already block this person',
+    'already_unblock' => 'You already unblock this person',
 ];

@@ -17,9 +17,11 @@ class MessageController extends Controller
         } catch (ModelNotFoundException $e) {
             throw new MessageNotExistedException();
         }
+
         if ($message->from_id != auth()->id()) {
             throw new MessageNotExistedException();
         }
+        
         $message->delete();
         return response()->json([
             'code' => config('response_code.ok'),
