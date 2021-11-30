@@ -8,6 +8,8 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Exceptions\UserNotExistedException;
+
 
 class UserController extends Controller
 {
@@ -17,6 +19,7 @@ class UserController extends Controller
             'data' => User::all(),
         ]);
     }
+
 
     public function change_password(ChangePasswordRequest $request)
     {
@@ -49,5 +52,34 @@ class UserController extends Controller
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
         ];
+    }
+
+    public function getUserInfo(Request $request){
+        if($request->user_id) {
+            $user = User::find($request->user_id);
+            if ($user === null) {
+                throw new UserNotExistedException();
+            }
+        }
+        else
+            $user = auth()->user();
+
+        $user->avatar = $user->avatar;
+        $user->listing = $user->friends()->count();
+        $user->created = $user->created_at;
+        $friendList = $user->friend->pluck('id')->toArray();
+        $friendedByList = $user->friendedBy->pluck('id')->toArray();
+
+        if(in_array(auth()->id(), $friendList) || in_array(auth()->id(), $friendedByList)){
+            $user->is_friend = true;
+        }
+        else
+            $user->is_friend = false;
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => $user,
+        ]);
     }
 }
