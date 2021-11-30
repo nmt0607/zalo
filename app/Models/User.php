@@ -77,6 +77,16 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'relationships', 'to_id', 'from_id')->where('status', 2);
     }
 
+    public function request()
+    {
+        return $this->belongsToMany(User::class, 'relationships', 'from_id', 'to_id')->where('status', 1)->withTimestamps();
+    }
+
+    public function requestedBy()
+    {
+        return $this->belongsToMany(User::class, 'relationships', 'to_id', 'from_id')->where('status', 1)->withTimestamps()->withPivot('status');
+    }
+
     public function friends()
     {
         return $this->friend->merge($this->friendedBy);
