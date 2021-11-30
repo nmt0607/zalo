@@ -11,6 +11,9 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         $users = User::where('name', 'like', '%'.$request->search.'%')->orderBy('name')->get();
+        foreach ($users as $user) {
+            $user->avatar = $user->avatar;
+        }
         $messages = Message::where('message', 'like', '%'.$request->search.'%')
             ->where(function($query){
                 $query->where('from_id', auth()->id());
