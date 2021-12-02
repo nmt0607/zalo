@@ -91,4 +91,26 @@ class FriendController extends Controller
             ]
         ]);
     }
+
+    public function getSuggestedListFriends(GetUserFriendRequest $request)
+    {
+        $friendsId = auth()->user()->friends()->pluck('id')->toArray();
+        $users = User::whereNotIn('id', $friendsId)->where('id', '!=', auth()->id())->get();
+        foreach($users as $user) {
+            $user->user_id = $user->id;
+            $user->username = $user->name;
+            $user->avatar = $user->avatar;
+            $user->same_friends = $user->friends()->pluck('id')->intersect(auth()->user()->friends()->pluck('id'))->count();
+
+        }
+        $request->index == 0 ? $request->index = 1 : $request->index;
+        $users = $users->sortByDesc('same_friends')->skip($request->index - 1)->take($request->count)->values()->all();
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => [
+                'list_users' => $users,
+            ]
+        ]);
+    }
 }
