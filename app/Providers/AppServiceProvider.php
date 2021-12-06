@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Collection::macro('equal', function ($another) {
+            $another = collect($another);
+
+            return $this->diff($another)->isEmpty() && $another->diff($this)->isEmpty();
+        });
     }
 }
