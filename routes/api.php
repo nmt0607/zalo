@@ -52,17 +52,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/get_user_info', 'App\Http\Controllers\UserController@getUserInfo');
 
     Route::post('/get_suggested_list_friends', 'App\Http\Controllers\FriendController@getSuggestedListFriends');
+
     Route::post('/get_user_list', 'App\Http\Controllers\AdminController@getUserList');
     Route::post('/delete_user', 'App\Http\Controllers\AdminController@deleteUser');
     Route::post('/set_user_state', 'App\Http\Controllers\AdminController@setUserState');
     Route::post('/get_user_basic_info', 'App\Http\Controllers\AdminController@getUserBasicInfo');
-
+    Route::post('/set_role', 'App\Http\Controllers\AdminController@set_role');
+    Route::post('/get_analyst_result', 'App\Http\Controllers\AdminController@get_analyst_result');
 });
 
 
 Route::post('/get_admin_permission', 'App\Http\Controllers\AdminController@get_admin_permission');
-Route::post('/set_role', 'App\Http\Controllers\AdminController@set_role');
-Route::post('/get_analyst_result', 'App\Http\Controllers\AdminController@get_analyst_result');
 Route::post('/get_saved_search', 'App\Http\Controllers\SearchController@get_saved_search');
 Route::post('/del_saved_search', 'App\Http\Controllers\SearchController@del_saved_search');
 

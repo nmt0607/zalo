@@ -31,4 +31,5 @@ return [
     'cant_get_verify_code' => 'An error occurred while getting verify code',
     'cant_verify_code' => 'An error occurred while verifying code',
     'account_already_active' => 'This account has already been active',
+    'user_already_has_this_role' => 'This user already has this role',
 ];

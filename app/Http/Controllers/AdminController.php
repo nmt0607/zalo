@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\UserAlreadyHasThisRoleException;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\GetUserFriendRequest;
 use App\Http\Requests\GetRequestFriendRequest;
 use App\Exceptions\UserNotExistedException;
-
+use App\Http\Requests\SetRoleRequest;
 
 class AdminController extends Controller
 {
     public function getUserList(GetUserFriendRequest $request)
     {
-        if(auth()->user()->role != 'admin') {
+        if (auth()->user()->role != 'admin') {
             return response()->json([
                 'code' => 1009,
                 'message' => 'Not access',
             ]);
         }
-        $users = User::where('role', 'user')->where('state', 'active')->skip($request->index-1)->take($request->count)->get();
+        $users = User::where('role', 'user')->where('state', 'active')->skip($request->index - 1)->take($request->count)->get();
         foreach ($users as $user) {
             $user->avatar = $user->avatar;
         }
@@ -32,7 +33,7 @@ class AdminController extends Controller
 
     public function deleteUser(GetRequestFriendRequest $request)
     {
-        if(auth()->user()->role != 'admin') {
+        if (auth()->user()->role != 'admin') {
             return response()->json([
                 'code' => 1009,
                 'message' => 'Not access',
@@ -48,12 +49,11 @@ class AdminController extends Controller
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
         ]);
-
     }
 
     public function setUserState(GetRequestFriendRequest $request)
     {
-        if(auth()->user()->role != 'admin') {
+        if (auth()->user()->role != 'admin') {
             return response()->json([
                 'code' => 1009,
                 'message' => 'Not access',
@@ -69,7 +69,6 @@ class AdminController extends Controller
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
         ]);
-
     }
 
     public function getUserBasicInfo(GetRequestFriendRequest $request)
@@ -84,7 +83,30 @@ class AdminController extends Controller
             'message' => __('messages.ok'),
             'data' => $user,
         ]);
-
     }
 
+    public function set_role(SetRoleRequest $request)
+    {
+        if (auth()->user()->role != 'superadmin') {
+            return response()->json([
+                'code' => 1009,
+                'message' => 'Not access',
+            ]);
+        }
+
+        $user = User::find($request->user_id);
+        if ($user === null) {
+            throw new UserNotExistedException();
+        }
+
+        if ($user->role == $request->role) {
+            throw new UserAlreadyHasThisRoleException();
+        }
+        $user->role = $request->role;
+        $user->save();
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+        ]);
+    }
 }

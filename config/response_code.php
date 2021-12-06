@@ -32,4 +32,5 @@ return [
     'cant_get_verify_code' => 1020,
     'cant_verify_code' => 1021,
     'account_already_active' => 1022,
+    'user_already_has_this_role' => 1023,
 ];
