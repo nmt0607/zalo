@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Events\AuthenticatingWithToken;
 use App\Events\ConversationJoining;
+use App\Events\MessageSending;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
 
@@ -36,6 +37,7 @@ class RedisSubscribe extends Command
         $this->events = [
             config('define.events.authenticating') => new AuthenticatingWithToken(),
             config('define.events.conversation_joining') => new ConversationJoining(),
+            config('define.events.message_sending') => new MessageSending(),
         ];
     }
 
@@ -53,9 +55,8 @@ class RedisSubscribe extends Command
                     'data' =>  $data,
                 ] = json_decode($message, true);
 
-                $event = $this->events[$eventName];
-                if ($event) {
-                    event($event->setData($data));
+                if (array_key_exists($eventName, $this->events)) {
+                    event($this->events[$eventName]->setData($data));
                 }
             });
     }
