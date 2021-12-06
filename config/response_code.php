@@ -33,4 +33,5 @@ return [
     'cant_verify_code' => 1021,
     'account_already_active' => 1022,
     'user_already_has_this_role' => 1023,
+    'search_id_not_found' => 1024,
 ];

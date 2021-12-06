@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\SearchIdNotFoundException;
+use App\Http\Requests\DelSavedSearchRequest;
 use App\Http\Requests\GetSavedSearchRequest;
 use App\Models\User;
 use App\Models\Message;
@@ -55,6 +57,34 @@ class SearchController extends Controller
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => $data
+        ]);
+    }
+
+    public function del_saved_search(DelSavedSearchRequest $request)
+    {
+        if ($request->all == 1) {
+            Search::destroy(auth()->user()->searches->pluck('id'));
+            return response()->json([
+                'code' => config('response_code.ok'),
+                'message' => __('messages.ok')
+            ]);
+        }
+
+        $search = Search::find($request->search_id);
+
+        if (!$search) {
+            throw new SearchIdNotFoundException();
+        }
+        
+        if ($search->user_id != auth()->id()) {
+            throw new SearchIdNotFoundException();
+        }
+
+        $search->delete();
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok')
         ]);
     }
 }
