@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
+    public function searches()
+    {
+        return $this->hasMany(Search::class)->latest();
+    }
+
     public function friend()
     {
         return $this->belongsToMany(User::class, 'relationships', 'from_id', 'to_id')->where('status', 2);
