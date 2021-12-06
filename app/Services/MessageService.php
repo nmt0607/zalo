@@ -6,9 +6,7 @@ use App\Models\Message;
 
 class MessageService
 {
-    /**
-     * @var ConversationService
-     */
+    /** @var ConversationService */
     protected $conversationService;
 
     public function __construct()
@@ -19,5 +17,10 @@ class MessageService
     public function create(array $attributes = [])
     {
         return Message::create($attributes);
+    }
+
+    public function destroy($id)
+    {
+        return Message::destroy($id);
     }
 }
