@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use App\Events\AuthenticatingWithToken;
+use App\Events\ConversationJoining;
+use App\Events\MessageSending;
+use App\Listeners\AuthenticateToken;
+use App\Listeners\CreateMessage;
+use App\Listeners\JoinConversation;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
@@ -15,9 +19,15 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+        AuthenticatingWithToken::class => [
+            AuthenticateToken::class,
         ],
+        ConversationJoining::class => [
+            JoinConversation::class,
+        ],
+        MessageSending::class => [
+            CreateMessage::class,
+        ]
     ];
 
     /**

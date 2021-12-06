@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Conversation;
 use App\Models\User;
 
 class ConversationService
@@ -36,5 +37,22 @@ class ConversationService
         return $conversation->messages->contains(function ($message) use ($userId) {
             return $message->to_id === $userId && !$message->is_read;
         });
+    }
+
+    public function findConversationByUserIds($userIds)
+    {
+        return Conversation::with('participants')
+            ->get()
+            ->first(function ($conversation) use ($userIds) {
+                return $conversation->participants->pluck('id')->equal($userIds);
+            });
+    }
+
+    public function createConversation($userIds)
+    {
+        $conversation = Conversation::create();
+        $conversation->participants()->attach($userIds);
+
+        return $conversation;
     }
 }

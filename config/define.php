@@ -17,4 +17,11 @@ return [
             'unread' => 1,
         ]
     ],
+    'events' => [
+        'authenticating' => 'authenticating',
+        'conversation_joining' => 'joinchat',
+        'conversation_joined' => 'conversation_joined',
+        'message_sending' => 'send',
+        'message_created' => 'message_created',
+    ]
 ];
