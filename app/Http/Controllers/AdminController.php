@@ -22,13 +22,13 @@ class AdminController extends Controller
 {
     public function getUserList(GetUserFriendRequest $request)
     {
-        if (auth()->user()->role != 'admin') {
+        if (auth()->user()->role == 'user') {
             return response()->json([
                 'code' => config('response_code.not_access'),
                 'message' => __('messages.not_access'),
             ]);
         }
-        $users = User::where('role', 'user')->where('state', 'active')->skip($request->index - 1)->take($request->count)->get();
+        $users = User::where('role', 'user')->skip($request->index - 1)->take($request->count)->get();
         foreach ($users as $user) {
             $user->avatar = $user->avatar;
         }
@@ -41,7 +41,7 @@ class AdminController extends Controller
 
     public function deleteUser(GetRequestFriendRequest $request)
     {
-        if (auth()->user()->role != 'admin') {
+        if (auth()->user()->role == 'user') {
             return response()->json([
                 'code' => config('response_code.not_access'),
                 'message' => __('messages.not_access'),
@@ -61,7 +61,7 @@ class AdminController extends Controller
 
     public function setUserState(GetRequestFriendRequest $request)
     {
-        if (auth()->user()->role != 'admin') {
+        if (auth()->user()->role == 'user') {
             return response()->json([
                 'code' => config('response_code.not_access'),
                 'message' => __('messages.not_access'),
@@ -81,6 +81,12 @@ class AdminController extends Controller
 
     public function getUserBasicInfo(GetRequestFriendRequest $request)
     {
+        if (auth()->user()->role == 'user') {
+            return response()->json([
+                'code' => config('response_code.not_access'),
+                'message' => __('messages.not_access'),
+            ]);
+        }
         $user = User::find($request->user_id);
         if ($user === null) {
             throw new UserNotExistedException();
