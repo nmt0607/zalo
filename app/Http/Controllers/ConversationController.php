@@ -67,8 +67,10 @@ class ConversationController extends Controller
         }
 
         foreach ($messages as $message) {
+            $message->message_id = $message->id;
             $message->unread = $message->is_read;
             $message->sender = $message->sender;
+            $message->sender->username = $message->sender->name;
             $message->sender->avatar = $message->sender->avatar;
         }
         return response()->json([
