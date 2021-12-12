@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Exceptions\UserNotExistedException;
-
+use App\Http\Requests\SetUserInfoRequest;
 
 class UserController extends Controller
 {
@@ -41,7 +41,7 @@ class UserController extends Controller
             }
         }
 
-        if (strlen($longest)/strlen($request->new_password)>=0.8) {
+        if (strlen($longest) / strlen($request->new_password) >= 0.8) {
             throw new NewPasswordTooSimilarException();
         }
 
@@ -54,14 +54,14 @@ class UserController extends Controller
         ];
     }
 
-    public function getUserInfo(Request $request){
-        if($request->user_id) {
+    public function getUserInfo(Request $request)
+    {
+        if ($request->user_id) {
             $user = User::find($request->user_id);
             if ($user === null) {
                 throw new UserNotExistedException();
             }
-        }
-        else
+        } else
             $user = auth()->user();
 
         $user->avatar = $user->avatar;
@@ -70,16 +70,36 @@ class UserController extends Controller
         $friendList = $user->friend->pluck('id')->toArray();
         $friendedByList = $user->friendedBy->pluck('id')->toArray();
 
-        if(in_array(auth()->id(), $friendList) || in_array(auth()->id(), $friendedByList)){
+        if (in_array(auth()->id(), $friendList) || in_array(auth()->id(), $friendedByList)) {
             $user->is_friend = true;
-        }
-        else
+        } else
             $user->is_friend = false;
 
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => $user,
+        ]);
+    }
+
+    public function set_user_info(SetUserInfoRequest $request)
+    {
+        $user = auth()->user();
+
+        if ($request->user_name){
+            $user->name = $request->user_name;
+        }
+        if ($request->description){
+            $user->description = $request->description;
+        }
+        if ($request->description){
+            $user->description = $request->description;
+        }
+        $user->save();
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
         ]);
     }
 }
