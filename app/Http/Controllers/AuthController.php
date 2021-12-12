@@ -7,14 +7,12 @@ use App\Exceptions\WrongPasswordException;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function signup(SignupRequest $request) {
+    public function signup(SignupRequest $request)
+    {
         $user = User::create([
             'name' => '',
             'phonenumber' => $request->phonenumber,
@@ -34,8 +32,9 @@ class AuthController extends Controller
             ]
         ];
     }
- 
-    public function logout(){
+
+    public function logout()
+    {
         auth()->user()->tokens()->delete();
 
         return [
@@ -47,7 +46,8 @@ class AuthController extends Controller
         ];
     }
 
-    public function login(LoginRequest $request) {
+    public function login(LoginRequest $request)
+    {
         // Check phonenumber
         $user = User::where('phonenumber', $request->phonenumber)->first();
 
@@ -55,7 +55,7 @@ class AuthController extends Controller
             throw new UserNotValidatedException();
         }
 
-        if(!Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $user->password)) {
             throw new WrongPasswordException();
         }
 
@@ -69,7 +69,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'username' => $user->name,
                 'token' => $token,
-                'avatar' => '',
+                'avatar' => $user->avatar?->link,
                 'active' => $user->state
             ]
         ];
