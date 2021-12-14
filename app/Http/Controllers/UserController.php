@@ -10,9 +10,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Exceptions\UserNotExistedException;
 use App\Http\Requests\SetUserInfoRequest;
+use App\Services\ImageService;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    /**
+     * @var ImageService
+     */
+    protected $imageService;
+
+    public function __construct(
+        ImageService $imageService
+    ) {
+        $this->imageService = $imageService;
+    }
+
     public function index()
     {
         return response()->json([
@@ -86,14 +99,23 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        if ($request->user_name){
+        if ($request->user_name) {
             $user->name = $request->user_name;
         }
-        if ($request->description){
+        if ($request->description) {
             $user->description = $request->description;
         }
-        if ($request->description){
-            $user->description = $request->description;
+        if ($request->country) {
+            $user->country = $request->country;
+        }
+        if ($request->link) {
+            $user->link = $request->link;
+        }
+        if ($request->hasFile('avatar')) {
+            $this->imageService->create($request->avatar, $user, 'avatar');
+        }
+        if ($request->hasFile('cover_image')) {
+            $this->imageService->create($request->cover_image, $user, 'cover image');
         }
         $user->save();
 

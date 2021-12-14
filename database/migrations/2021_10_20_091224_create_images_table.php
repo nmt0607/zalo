@@ -18,7 +18,7 @@ class CreateImagesTable extends Migration
             $table->string('link');
             $table->integer('model_id');
             $table->string('model');
-
+            $table->string('type')->nullable(); //post image, avatar, cover image
             $table->timestamps();
         });
     }

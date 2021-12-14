@@ -23,7 +23,9 @@ class User extends Authenticatable
         'phonenumber',
         'password',
         'state',
-        'role'
+        'role',
+        'description',
+        'country',
     ];
 
     /**
@@ -49,7 +51,12 @@ class User extends Authenticatable
 
     public function avatar()
     {
-        return $this->morphOne(Image::class, 'imageable');
+        return $this->morphOne(Image::class, 'imageable')->where('type', 'avatar')->latest();
+    }
+
+    public function coverImage()
+    {
+        return $this->morphOne(Image::class, 'imageable')->where('type', 'cover image')->latest();
     }
 
     public function block()
