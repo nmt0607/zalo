@@ -69,7 +69,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'username' => $user->name,
                 'token' => $token,
-                'avatar' => $user->avatar?->link,
+                'avatar' => $user->avatar->link,
                 'active' => $user->state
             ]
         ];

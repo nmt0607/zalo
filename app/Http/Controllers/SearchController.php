@@ -19,11 +19,11 @@ class SearchController extends Controller
             'keyword' => $request->keyword,
         ]);
 
-        $users = User::where('name', 'like', '%' . $request->search . '%')->orderBy('name')->get();
+        $users = User::where('name', 'like', '%' . $request->keyword . '%')->orderBy('name')->get();
         foreach ($users as $user) {
             $user->avatar = $user->avatar;
         }
-        $messages = Message::where('message', 'like', '%' . $request->search . '%')
+        $messages = Message::where('message', 'like', '%' . $request->keyword . '%')
             ->where(function ($query) {
                 $query->where('from_id', auth()->id());
                 $query->orWhere('to_id', auth()->id());
