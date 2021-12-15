@@ -88,6 +88,7 @@ class PostController extends Controller
         $friend_ids = auth()->user()->friends()->pluck('id');
         $block_ids = auth()->user()->blockDiary->pluck('id');
         $user_ids = $friend_ids->diff($block_ids);
+        $user_ids->push(auth()->id());
         if ($index == 0) {
             $posts_ids = Post::whereIn('user_id', $user_ids)->orderBy('updated_at', 'desc')->take($count)->pluck('id')->toArray();
             $new_items = 0;
