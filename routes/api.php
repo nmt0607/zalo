@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/delete_post', 'App\Http\Controllers\PostController@destroy');
     Route::post('/report_post', 'App\Http\Controllers\PostController@report');
     Route::post('/get_list_posts', 'App\Http\Controllers\PostController@get_list_posts');
+    Route::post('/get_diary', 'App\Http\Controllers\PostController@get_diary');
     Route::post('/check_new_item', 'App\Http\Controllers\PostController@check_new_item');
     Route::post('/like', 'App\Http\Controllers\PostController@like');
 

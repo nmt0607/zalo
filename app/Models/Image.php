@@ -17,6 +17,15 @@ class Image extends Model
         'type'
     ];
 
+    protected $hidden = [
+        'type',
+        'updated_at',
+        'created_at',
+        "imageable_type",
+        "imageable_id",
+        "name"
+    ];
+
     public function imageable()
     {
         return $this->morphTo();

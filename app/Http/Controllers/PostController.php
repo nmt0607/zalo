@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AlreadyBlockException;
 use App\Exceptions\LastPostNotExistException;
+use App\Exceptions\UserNotExistedException;
 use App\Http\Requests\CheckNewItemRequest;
 use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\GetDiaryRequest;
 use App\Http\Requests\GetListPostsRequest;
 use App\Http\Requests\ReportPostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Like;
 use App\Models\Post;
+use App\Models\User;
 use App\Services\ImageService;
 use App\Services\PostService;
 use Illuminate\Http\Request;
@@ -81,11 +85,70 @@ class PostController extends Controller
         $index = (int)$request->index;
         $last_index = $index - 1;
         $count = (int)$request->count;
+        $friend_ids = auth()->user()->friends()->pluck('id');
+        $block_ids = auth()->user()->blockDiary->pluck('id');
+        $user_ids = $friend_ids->diff($block_ids);
         if ($index == 0) {
-            $posts_ids = Post::whereIn('user_id', auth()->user()->friends()->pluck('id'))->orderBy('updated_at', 'desc')->take($count)->pluck('id')->toArray();
+            $posts_ids = Post::whereIn('user_id', $user_ids)->orderBy('updated_at', 'desc')->take($count)->pluck('id')->toArray();
             $new_items = 0;
         } else {
-            $all_ids = Post::whereIn('user_id', auth()->user()->friends()->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
+            $all_ids = Post::whereIn('user_id', $user_ids)->orderBy('updated_at', 'desc')->pluck('id')->toArray();
+            if (array_search($last_id, $all_ids) === false) {
+                throw new LastPostNotExistException();
+            }
+            $new_items = array_search($last_id, $all_ids) - $last_index;
+            $key = $new_items + $index;
+            $posts_ids = array_slice($all_ids, $key, $count);
+            // $posts = Post::whereIn('id', $posts_ids);
+        }
+
+        return response()->json([
+            'code' => config('response_code.ok'),
+            'message' => __('messages.ok'),
+            'data' => [
+                'posts' => array_map(function ($id) {
+                    return $this->postService->show($id);
+                }, $posts_ids),
+                'last_id' => end($posts_ids),
+                'new_items' => $new_items
+            ]
+        ]);
+    }
+
+    public function get_diary(GetDiaryRequest $request)
+    {
+        if ($request->user_id) {
+            $user_id =  $request->user_id;
+            if (!User::find($user_id)) {
+                throw new UserNotExistedException();
+            }
+            if (in_array($user_id, auth()->user()->blockDiary->pluck('id')->toArray())) {
+                throw new AlreadyBlockException();
+            }
+            if (in_array($user_id, auth()->user()->blockedDiaryBy->pluck('id')->toArray())) {
+                return response()->json([
+                    'code' => config('response_code.ok'),
+                    'message' => __('messages.ok'),
+                    'data' => [
+                        'posts' => [],
+                        'last_id' => false,
+                        'new_items' => 0
+                    ]
+                ]);
+            }
+        }
+        else {
+            $user_id = auth()->id();
+        }
+        $last_id = (int)$request->last_id;
+        $index = (int)$request->index;
+        $last_index = $index - 1;
+        $count = (int)$request->count;
+        if ($index == 0) {
+            $posts_ids = Post::where('user_id', $user_id)->orderBy('updated_at', 'desc')->take($count)->pluck('id')->toArray();
+            $new_items = 0;
+        } else {
+            $all_ids = Post::where('user_id', $user_id)->orderBy('updated_at', 'desc')->pluck('id')->toArray();
             if (array_search($last_id, $all_ids) === false) {
                 throw new LastPostNotExistException();
             }

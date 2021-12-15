@@ -20,11 +20,11 @@ class PostService
     public function show($id)
     {
         $post = $this->findOrFail($id);
-        $listBlockId = auth()->user()->block->pluck('id')->toArray();
+        $listBlockId = auth()->user()->blockDiary->pluck('id')->toArray();
         if (in_array($post->user_id, $listBlockId)) {
             throw new PostNotExistedException();
         }
-        $listBlockedById = auth()->user()->blockedBy->pluck('id')->toArray();
+        $listBlockedById = auth()->user()->blockedDiaryBy->pluck('id')->toArray();
         if (in_array($post->user_id, $listBlockedById)) {
             throw new PostNotExistedException();
         }
@@ -34,7 +34,7 @@ class PostService
         $post->images = $post->images;
         $post->videos = $post->videos;
         $post->author = $post->author;
-        $post->author->image = $post->author->avatar;
+        $post->author->avatar = $post->author->avatar;
         $post->is_blocked = $post->isBlocked();
         $post->can_edit = $post->canEdit();
         $post->can_comment = $post->canComment();

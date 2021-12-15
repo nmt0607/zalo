@@ -51,7 +51,7 @@ class Post extends Model
 
     public function isBlocked()
     {
-        return in_array(auth()->id(), User::findOrFail($this->user_id)->block->pluck('to_id')->toArray());
+        return in_array(auth()->id(), User::findOrFail($this->user_id)->blockDiaries()->pluck('id')->toArray());
     }
 
     public function canComment()
