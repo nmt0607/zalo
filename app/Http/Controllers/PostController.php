@@ -61,15 +61,14 @@ class PostController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        $images = $request->file('image');
-        if ($request->hasFile('image')) {
-            $this->imageService->createMany($images, $post);
+        if ($request->hasFile('image.*')) {
+            $this->imageService->createMany($request->image, $post);
         }
 
-        $videos = $request->file('video');
         if ($request->hasFile('video')) {
-            $this->imageService->createMany($videos, $post);
+            $this->imageService->create($request->video, $post);
         }
+
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
@@ -137,8 +136,7 @@ class PostController extends Controller
                     ]
                 ]);
             }
-        }
-        else {
+        } else {
             $user_id = auth()->id();
         }
         $last_id = (int)$request->last_id;
