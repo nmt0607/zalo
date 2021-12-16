@@ -56,7 +56,7 @@ class UpdatePostRequest extends CustomFormRequest
                 'prohibits:video',
             ],
             'image.*' => [
-                'mimes:jpg,png,bmp,svg,webp',
+                'mimes:jpg,png,bmp,webp',
                 'max:4096', // 4MB
             ],
             'image_del' => [
