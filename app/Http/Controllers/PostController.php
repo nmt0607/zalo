@@ -16,26 +16,28 @@ use App\Models\Post;
 use App\Models\User;
 use App\Services\ImageService;
 use App\Services\PostService;
+use App\Services\VideoService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    /**
-     * @var PostService
-     */
+    /** @var PostService */
     protected $postService;
 
-    /**
-     * @var ImageService
-     */
+    /** @var ImageService */
     protected $imageService;
+
+    /** @var VideoService */
+    protected $videoService;
 
     public function __construct(
         PostService $postService,
-        ImageService $imageService
+        ImageService $imageService,
+        VideoService $videoService
     ) {
         $this->postService = $postService;
         $this->imageService = $imageService;
+        $this->videoService = $videoService;
     }
 
     public function index()
@@ -66,7 +68,7 @@ class PostController extends Controller
         }
 
         if ($request->hasFile('video')) {
-            $this->imageService->create($request->video, $post);
+            $this->videoService->create($request->video, $post);
         }
 
         return response()->json([
@@ -204,12 +206,14 @@ class PostController extends Controller
         $imageDel = $request->image_del ?? [];
         $this->imageService->deleteMany($imageDel);
 
-        if ($request->has('image')) {
+        if ($request->hasFile('image.*')) {
             $this->imageService->createMany($request->image, $post);
         }
 
-        if ($request->has('video')) {
-            $this->imageService->create($request->video, $post);
+        if ($request->hasFile('video')) {
+            $videoId = $this->postService->getVideoId($post->id);
+            $this->videoService->delete($videoId);
+            $this->videoService->create($request->video, $post);
         }
 
         return response()->json([
@@ -224,9 +228,11 @@ class PostController extends Controller
         $post = $this->postService->findOrFail($postId);
         $this->authorize('destroy', $post);
 
-        // Delete all the images that belong to post
+        // Delete all the images and video that belong to post
         $imageIds = $this->postService->getAllImageIds($postId);
+        $videoId = $this->postService->getVideoId($postId);
         $this->imageService->deleteMany($imageIds);
+        $this->videoService->delete($videoId);
 
         $this->postService->delete($postId);
 

@@ -32,7 +32,7 @@ class PostService
         $post->comment = $post->comment();
         $post->is_liked = $post->isLiked();
         $post->images = $post->images;
-        $post->videos = $post->videos;
+        $post->video = $post->video;
         $post->author = $post->author;
         $post->author->avatar = $post->author->avatar;
         $post->is_blocked = $post->isBlocked();
@@ -60,5 +60,12 @@ class PostService
         $post = $this->findOrFail($id);
 
         return $post->images->pluck('id');
+    }
+
+    public function getVideoId($id)
+    {
+        $post = $this->findOrFail($id);
+
+        return $post->video->id;
     }
 }

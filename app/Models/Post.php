@@ -21,12 +21,12 @@ class Post extends Model
 
     public function images()
     {
-        return $this->morphMany(Image::class, 'imageable')->where('link', 'not like', '%mp4');
+        return $this->morphMany(Image::class, 'imageable');
     }
 
-    public function videos()
+    public function video()
     {
-        return $this->morphMany(Image::class, 'imageable')->where('link', 'like', '%mp4');
+        return $this->morphOne(Video::class, 'videoable');
     }
 
     public function like()
