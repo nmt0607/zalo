@@ -35,7 +35,7 @@ class ConversationController extends Controller
                 }
 
                 return $numUnreadConversations;
-            });
+            }) ?? 0;
 
         return (new ConversationCollection($conversations))
             ->additional([
