@@ -22,10 +22,14 @@ class ConversationCollection extends ResourceCollection
                     return $participant->id !== $user->id;
                 });
 
+            $lastMessage = $conversation->lastMessage
+                ? new MessageResource($conversation->lastMessage)
+                : null;
+
             return [
                 'id' => $conversation->id,
                 'partner' => new UserResource($recipient),
-                'lastmessage' => new MessageResource($conversation->lastMessage),
+                'lastmessage' => $lastMessage,
             ];
         });
 
