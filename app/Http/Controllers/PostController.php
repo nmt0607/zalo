@@ -166,13 +166,19 @@ class PostController extends Controller
             $posts[$post->created_at->toDateString()][] = $post;
         }
 
+        $groups_posts = [];
+        foreach ($posts as $day => $list_posts) {
+            $groups_posts[] = [
+                'created_date' => $day,
+                'posts' => $list_posts,
+            ];
+        }
+
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => [
-                'posts' => $posts,
-                'last_id' => end($posts_ids),
-                'new_items' => $new_items
+                'groups_posts' => $groups_posts
             ]
         ]);
     }
