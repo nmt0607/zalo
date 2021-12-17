@@ -187,7 +187,11 @@ class PostController extends Controller
     {
         $last_id = (int)$request->last_id;
         $category_id = (int)$request->category_id;
-        $all_ids = Post::whereIn('user_id', auth()->user()->friends()->pluck('id'))->orderBy('updated_at', 'desc')->pluck('id')->toArray();
+        $friend_ids = auth()->user()->friends()->pluck('id');
+        $block_ids = auth()->user()->blockDiary->pluck('id');
+        $user_ids = $friend_ids->diff($block_ids);
+        $user_ids->push(auth()->id());
+        $all_ids = Post::whereIn('user_id', $user_ids)->orderBy('updated_at', 'desc')->pluck('id')->toArray();
         $new_items = array_search($last_id, $all_ids);
         if (array_search($last_id, $all_ids) === false) {
             throw new LastPostNotExistException();
