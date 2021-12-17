@@ -22,9 +22,9 @@ class Message extends Model
         return $this->belongsTo(Conversation::class);
     }
 
-    public function getUnreadAttribute($is_read)
+    public function getUnreadAttribute()
     {
-        return $is_read
+        return $this->is_read
             ? config('define.message.status.read')
             : config('define.message.status.unread');
     }
