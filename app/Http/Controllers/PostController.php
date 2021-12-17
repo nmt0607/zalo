@@ -159,13 +159,18 @@ class PostController extends Controller
             // $posts = Post::whereIn('id', $posts_ids);
         }
 
+        $posts = [];
+
+        foreach ($posts_ids as $id) {
+            $post = $this->postService->show($id);
+            $posts[$post->created_at->toDateString()][] = $post;
+        }
+
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => [
-                'posts' => array_map(function ($id) {
-                    return $this->postService->show($id);
-                }, $posts_ids),
+                'posts' => $posts,
                 'last_id' => end($posts_ids),
                 'new_items' => $new_items
             ]
