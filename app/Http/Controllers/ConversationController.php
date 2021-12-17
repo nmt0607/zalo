@@ -30,7 +30,7 @@ class ConversationController extends Controller
             ->getListConversationsByUserId(
                 auth()->id(),
                 $request->count,
-                $request->index
+                $request->index - 1
             );
 
         $numUnreadConversations = $conversations
