@@ -59,9 +59,11 @@ class ImageService
     {
         $image = $this->find($id);
         $imageReference = $this->bucket->object($image->name);
+
+        $numDeletedImage = $image->delete();
         $imageReference->delete();
 
-        return $image->delete();
+        return $numDeletedImage;
     }
 
     public function deleteMany($ids)

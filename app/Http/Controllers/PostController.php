@@ -17,7 +17,9 @@ use App\Models\User;
 use App\Services\ImageService;
 use App\Services\PostService;
 use App\Services\VideoService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -216,20 +218,42 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request)
     {
-        $post = $this->postService->update($request->id, [
-            'content' => $request->described,
-        ]);
-        $imageDel = $request->image_del ?? [];
-        $this->imageService->deleteMany($imageDel);
+        try {
+            DB::beginTransaction();
 
-        if ($request->hasFile('image.*')) {
-            $this->imageService->createMany($request->image, $post);
-        }
+            if ($request->described) {
+                $this->postService->update($request->id, [
+                    'content' => $request->described,
+                ]);
+            }
 
-        if ($request->hasFile('video')) {
-            $videoId = $this->postService->getVideoId($post->id);
-            $this->videoService->delete($videoId);
-            $this->videoService->create($request->video, $post);
+            $post = $this->postService->findOrFail($request->id);
+
+            // Delete existing video if update image or update video
+            $imagesInputExisting = $request->hasFile('image.*');
+            $videoInputExisting = $request->hasFile('video');
+            if ($post->video && ($imagesInputExisting || $videoInputExisting)) {
+                $this->videoService->delete($post->video->id);
+            }
+
+            if ($request->hasFile('image.*')) {
+                $imageDel = $request->image_del ?? [];
+                $this->imageService->deleteMany($imageDel);
+
+                $this->imageService->createMany($request->image, $post);
+            }
+
+            if ($request->hasFile('video')) {
+                // Delete images if update video
+                $this->imageService->deleteMany($post->images->pluck('id'));
+
+                $this->videoService->create($request->video, $post);
+            }
+
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+            report($ex);
         }
 
         return response()->json([

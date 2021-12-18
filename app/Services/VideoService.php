@@ -47,9 +47,11 @@ class VideoService
     public function delete($id)
     {
         $video = $this->find($id);
+        $numDeletedVideo = $video->delete();
+
         $videoReference = $this->bucket->object($video->name);
         $videoReference->delete();
 
-        return $video->delete();
+        return $numDeletedVideo;
     }
 }
