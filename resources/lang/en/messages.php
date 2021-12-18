@@ -33,4 +33,5 @@ return [
     'account_already_active' => 'This account has already been active',
     'user_already_has_this_role' => 'This user already has this role',
     'search_id_not_found' => 'Search id not found',
+    'video_duration' => 'The video duration must be between 1s and 10s'
 ];

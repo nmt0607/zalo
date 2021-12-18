@@ -60,7 +60,7 @@ class CreatePostRequest extends CustomFormRequest
             'video' => [
                 'mimes:mp4,ogx,oga,ogv,ogg,webm',
                 'max:10240', // 10MB
-                //new VideoDuration(),
+                new VideoDuration(),
                 'prohibits:image',
             ],
         ];

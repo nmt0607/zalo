@@ -178,7 +178,8 @@ class PostController extends Controller
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => [
-                'groups_posts' => $groups_posts
+                'groups_posts' => $groups_posts,
+                'last_id' => end($posts_ids),
             ]
         ]);
     }

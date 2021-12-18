@@ -62,11 +62,11 @@ class UpdatePostRequest extends CustomFormRequest
             'image_del' => [
                 'array',
             ],
-            'image_soft' => [
+            'image_sort' => [
                 'array',
             ],
             'video' => [
-                'mimetypes:video/*',
+                'mimes:mp4,ogx,oga,ogv,ogg,webm',
                 'max:10240', // 10MB
                 new VideoDuration(),
                 'prohibits:image',
