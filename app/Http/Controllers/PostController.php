@@ -266,13 +266,14 @@ class PostController extends Controller
     {
         $postId = $request->id;
         $post = $this->postService->findOrFail($postId);
-        $this->authorize('destroy', $post);
+        $this->authorize('delete', $post);
 
         // Delete all the images and video that belong to post
-        $imageIds = $this->postService->getAllImageIds($postId);
-        $videoId = $this->postService->getVideoId($postId);
+        $imageIds = $post->images->pluck('id');
         $this->imageService->deleteMany($imageIds);
-        $this->videoService->delete($videoId);
+        if ($video = $post->video) {
+            $this->videoService->delete($video->id);
+        }
 
         $this->postService->delete($postId);
 
