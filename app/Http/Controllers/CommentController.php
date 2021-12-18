@@ -47,7 +47,10 @@ class CommentController extends Controller
             $comment->poster = $comment->poster;
             $comment->poster->avatar = $comment->poster->avatar;
         }
-        $isBlocked = in_array($post->user_id, auth()->user()->blockedBy->pluck('id')->toArray());
+        $isBlocked = null;
+
+        if(auth()->user()->blockedBy)
+            $isBlocked = in_array($post->user_id, auth()->user()->blockedBy->pluck('id')->toArray());
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
@@ -64,7 +67,10 @@ class CommentController extends Controller
             $comment->poster = $comment->poster;
             $comment->poster->avatar = $comment->poster->avatar;
         }
-        $isBlocked = in_array($post->user_id, auth()->user()->blockedBy->pluck('id')->toArray());
+        $isBlocked = null;
+
+        if(auth()->user()->blockedBy)
+            $isBlocked = in_array($post->user_id, auth()->user()->blockedBy->pluck('id')->toArray());
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
