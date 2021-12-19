@@ -42,7 +42,7 @@ class CommentController extends Controller
             'post_id' => $post->id,
             'comment' => $request->comment,
         ]);
-        $post->comments = $post->comments()->orderBy('created_at', 'desc')->take($request->count)->get();
+        $post->comments = $post->comments()->take($request->count)->get();
         foreach($post->comments as $comment ) {
             $comment->poster = $comment->poster;
             $comment->poster->avatar = $comment->poster->avatar;
@@ -62,7 +62,7 @@ class CommentController extends Controller
 
     public function getComment(GetCommentRequest $request){
         $post = $this->postService->findOrFail($request->id);
-        $post->comments = $post->comments()->orderBy('created_at', 'desc')->skip($request->index-1)->take($request->count)->get();
+        $post->comments = $post->comments()->skip($request->index-1)->take($request->count)->get();
         foreach($post->comments as $comment ) {
             $comment->poster = $comment->poster;
             $comment->poster->avatar = $comment->poster->avatar;
