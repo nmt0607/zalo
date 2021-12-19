@@ -42,7 +42,7 @@ class CommentController extends Controller
             'post_id' => $post->id,
             'comment' => $request->comment,
         ]);
-        $post->comments = $post->comments()->take($request->count)->get();
+        $post->comments = $post->comments()->skip($request->index-1)->take($request->count)->get();
         foreach($post->comments as $comment ) {
             $comment->poster = $comment->poster;
             $comment->poster->avatar = $comment->poster->avatar;
