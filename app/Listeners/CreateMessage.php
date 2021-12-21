@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Services\ConversationService;
 use App\Services\MessageService;
 use App\Services\UserService;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class CreateMessage
@@ -46,29 +48,45 @@ class CreateMessage
             'receiver' => ['id' => $receiverId],
             'content' => $content,
         ] = $event->getData();
+        $sender = User::findOrFail($senderId);
+        $receiver = User::findOrFail($receiverId);
+        if ($sender->blockedUserBy->contains($receiver)) {
+            return;
+        }
+
         $conversation = $this
             ->conversationService
             ->findConversationByUserIds([$senderId, $receiverId]);
-        $sender = User::findOrFail($senderId);
-        $receiver = User::findOrFail($receiverId);
-        $message = $this->messageService->create([
-            'from_id' => $senderId,
-            'to_id' => $receiverId,
-            'message' => $content,
-            'conversation_id' => $conversation->id,
-            'is_read' => false,
-        ]);
 
-        Redis::publish('chat', json_encode([
-            'event' => config('define.events.message_created'),
-            'data' => [
-                'conversation_id' => $message->conversation->id,
-                'sender' => new UserResource($sender),
-                'receiver' => new UserResource($receiver),
-                'message_id' => $message->id,
-                'message' => $message->message,
-                'created' => $message->created_at,
-            ],
-        ]));
+        try {
+            DB::beginTransaction();
+
+            $message = $this->messageService->create([
+                'from_id' => $senderId,
+                'to_id' => $receiverId,
+                'message' => $content,
+                'conversation_id' => $conversation->id,
+                'is_read' => false,
+            ]);
+            $conversation->updated_at = now();
+            $conversation->save();
+
+            DB::commit();
+
+            Redis::publish('chat', json_encode([
+                'event' => config('define.events.message_created'),
+                'data' => [
+                    'conversation_id' => $message->conversation->id,
+                    'sender' => new UserResource($sender),
+                    'receiver' => new UserResource($receiver),
+                    'message_id' => $message->id,
+                    'content' => $message->message,
+                    'created' => $message->created_at,
+                ],
+            ]));
+        } catch (Exception $ex) {
+            DB::rollBack();
+            report($ex);
+        }
     }
 }
