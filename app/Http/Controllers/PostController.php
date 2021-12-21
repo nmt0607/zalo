@@ -253,7 +253,7 @@ class PostController extends Controller
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-            report($ex);
+            throw $ex;
         }
 
         return response()->json([
