@@ -39,7 +39,6 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
         'role',
-        'state'
     ];
 
     /**
@@ -70,7 +69,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'relationships', 'to_id', 'from_id')->where('status', 3);
     }
-    
+
     public function blockUsers()
     {
         return $this->blockUser->merge($this->blockedUserBy);

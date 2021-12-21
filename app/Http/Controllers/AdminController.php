@@ -36,6 +36,7 @@ class AdminController extends Controller
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
             'data' => $users,
+            'total' => User::where('role', 'user')->count(),
         ]);
     }
 
@@ -181,7 +182,5 @@ class AdminController extends Controller
                 'total_images_and_videos' => $total_images_and_videos,
             ]
         ]);
-
-        
     }
 }
