@@ -259,6 +259,7 @@ class PostController extends Controller
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
+            'data' => $this->postService->show($request->id),
         ]);
     }
 
