@@ -21,6 +21,7 @@ class ConversationService
             ->conversations()
             ->limit($limit)
             ->offset($offset)
+            ->orderBy('updated_at', 'desc')
             ->get();
     }
 
