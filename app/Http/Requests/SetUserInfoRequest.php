@@ -29,7 +29,7 @@ class SetUserInfoRequest extends CustomFormRequest
     public function rules()
     {
         return [
-            'user_name' => 'string|alpha_dash|between:6,30',
+            'user_name' => 'string|regex:/^[a-z0-9A-Z\s\-_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]{6,30}$/u',
             'description' => 'string|max:150',
             'avatar' => 'mimes:jpg,png,bmp,svg,webp|max:4096',
             'address' => 'string|max:100',

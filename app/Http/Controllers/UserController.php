@@ -118,10 +118,15 @@ class UserController extends Controller
             $this->imageService->create($request->cover_image, $user, 'cover image');
         }
         $user->save();
+        $user->avatar = $user->avatar;
+        $user->cover_image = $user->coverImage;
 
         return response()->json([
             'code' => config('response_code.ok'),
             'message' => __('messages.ok'),
+            'data' => [
+                'user' => $user
+            ]
         ]);
     }
 }
