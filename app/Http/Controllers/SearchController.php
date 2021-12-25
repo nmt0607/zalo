@@ -38,6 +38,8 @@ class SearchController extends Controller
             'data' => [
                 'user' => $users,
                 'message' => $messages,
+                'total_user' => $users->count(),
+                'total_mess' => $messages->count(),
             ],
         ]);
     }
